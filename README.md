@@ -48,22 +48,24 @@ Oliver järjestää majoituksen
 
 Pyöräilyä Ahvenanmaalla
 
-- Lumparland
+Nähtävyyksiä:
+- Kastelholman linna (suljetaan jo klo 17)
+- Maarianhaminan satama + Pommern museolaiva
+- Merikortteli ja Merimuseo
+- Bomarsundin linnoituksen rauniot
+- Jomalan kirkko
+
+Luontokohteita:
+- Ramsholmen
 - Nåtö pähkinäpensaslehto
-- Järsö
-- Maarianhamina lounas
+- Herröskatan
+- Getabergen
+- Lilla holmen
 
-### Iltapäivä
-
-Pitkä reitti (yht. 200 km)
-
-- Eckerö
-- Geta
-- Vårdö
-
-Jos skippaa Eckerön tai Getan niin yht. 150 km
-
-Jos skippaa molemmat niin yht. 100 km
+Ruokapaikkoja ainakin näissä:
+- Maarianhamina
+- Kastelholma
+- Godby
 
 21:30 Viimeinen lautta Vårdöön
 
