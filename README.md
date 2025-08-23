@@ -36,6 +36,7 @@ Oliver järjestää majoituksen
 - [matkalla lautta Nauvo - Korppoo joka 30 min](https://www.finferries.fi/en/ferry-traffic/ferries-and-schedules/nauvo-korppoo.html#timetables)
 
 15:15 [Lautta Galtby - Långnäs](https://www.aland.travel/southern-line)
+
 20:05 Pyörällä majoitukseen, esim. Lumparland
 
 - Svinö Seaside Villa (100€?)
@@ -61,9 +62,11 @@ Pitkä reitti (yht. 200 km)
 - Vårdö
 
 Jos skippaa Eckerön tai Getan niin yht. 150 km
+
 Jos skippaa molemmat niin yht. 100 km
 
 21:30 Viimeinen lautta Vårdöön
+
 Majoitus, esim. Vårdö
 
 - Sandösunds Camping (65€?)
@@ -71,6 +74,7 @@ Majoitus, esim. Vårdö
 ## Maanantai
 
 09:30 [Lautta Hummelvik-Torsholma](https://www.alandstrafiken.ax/sites/default/files/2025-07/alfageln-norra-1.7.2025.pdf)
+
 11:55 Pyörällä Torsholma-Brändö
 
 - 1h? (23km)
@@ -79,11 +83,13 @@ Majoitus, esim. Vårdö
 - Voi käydä halutessaan Fiskössä (lisää 20 km)
 
 15:05 [Lautta Brändö (Åva) - Kustavi (Vuosnainen)](https://www.alandstrafiken.ax/sites/default/files/2025-05/osnas-ava_0.pdf)
+
 15:45 Pyöräily Vuosnainen - Vartsala (20 min, 6 km)
+
 16:30 [Lautta Vartsala - Kustavi joka 30 min](https://www.finferries.fi/en/ferry-traffic/ferries-and-schedules/vartsala.html#timetables)
 16:40 Pyöräily Kustavi - rautatieasema
 
-- 3h 45 min? (75 km)
+- [3h 45 min? (75 km)](https://www.openstreetmap.org/directions?engine=fossgis_osrm_bicycle&route=60.542667%2C21.336329%3B60.4517531%2C22.2670522)
 - ruokaa jostain jos ehditään
 
 21:08 Viimeinen juna takas Tampereelle
