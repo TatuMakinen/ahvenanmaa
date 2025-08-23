@@ -1,4 +1,4 @@
-# Pyöräilyreissu Ahvenanmaalle 30.8.-1.9.2024
+# Pyöräilyreissu Ahvenanmaalle 29.8.-1.9.2024
 
 ## Avoimet kysymykset
 
