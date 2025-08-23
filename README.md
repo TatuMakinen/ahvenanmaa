@@ -87,6 +87,7 @@ Majoitus, esim. Vårdö
 15:45 Pyöräily Vuosnainen - Vartsala (20 min, 6 km)
 
 16:30 [Lautta Vartsala - Kustavi joka 30 min](https://www.finferries.fi/en/ferry-traffic/ferries-and-schedules/vartsala.html#timetables)
+
 16:40 Pyöräily Kustavi - rautatieasema
 
 - [3h 45 min? (75 km)](https://www.openstreetmap.org/directions?engine=fossgis_osrm_bicycle&route=60.542667%2C21.336329%3B60.4517531%2C22.2670522)
