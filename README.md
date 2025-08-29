@@ -2,22 +2,18 @@
 
 ## Avoimet kysymykset
 
-- Kumpi juna otetaan perjantaina?
 - Isojen lauttojen liput (hlö + pyörä) pitää ostaa jokaisen itse [täältä](https://boka.alandstrafiken.ax/)
   - Galtby - Långnäs 30.8. (6€)
   - Hummelvik - Torsholma 1.9. 09:30 (6€)
   - Åva - Osnäs 1.9. 15:05 (0€)
-- Majoitus lauantaiksi?
 - Paljonko halutaan pyöräillä sunnuntaina?
 - Onko jotain paikkoja missä halutaan käydä sunnuntaina?
-- Majoitus sunnuntaiksi?
 
 ## Perjantai
 
 Juna Tampere - Turku
 
 - 16:10 - 17:50
-- 18:10 - 19:55
 
 Oliver järjestää majoituksen
 
@@ -37,9 +33,8 @@ Oliver järjestää majoituksen
 
 15:15 [Lautta Galtby - Långnäs](https://www.aland.travel/southern-line)
 
-20:05 Pyörällä majoitukseen, esim. Lumparland
+20:05 Pyörällä majoitukseen
 
-- Svinö Seaside Villa (100€?)
 - Svinö Camping Lodge (70€?)
 
 ## Sunnuntai
@@ -69,7 +64,7 @@ Ruokapaikkoja ainakin näissä:
 
 21:30 Viimeinen lautta Vårdöön
 
-Majoitus, esim. Vårdö
+Majoitus
 
 - Sandösunds Camping (65€?)
 
