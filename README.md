@@ -66,7 +66,7 @@ Ruokapaikkoja ainakin näissä:
 
 Majoitus
 
-- Sandösunds Camping (65€?)
+- Putte's Camping (65€?)
 
 ## Maanantai
 
