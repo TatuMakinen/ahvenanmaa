@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ahvenanmaan pyöräreitti 24.-27.8.</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  >
+  <style>
+    :root {
+      --bg: #f6f3ec;
+      --panel: #ffffff;
+      --ink: #17212b;
+      --muted: #5c6670;
+      --line: #d9d4c8;
+      --bike: #167447;
+      --bike-soft: #e3f3ea;
+      --ferry: #1769aa;
+      --ferry-soft: #e3f0fb;
+      --train: #4b5563;
+      --train-soft: #edf0f3;
+      --approx: #b46b18;
+      --approx-soft: #fff1dc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100%;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: #fffaf0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.2;
+      font-weight: 720;
+    }
+
+    .header-meta {
+      color: var(--muted);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(22rem, 27rem) minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    aside {
+      overflow: auto;
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+      padding: 1rem;
+    }
+
+    #map {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    h2 {
+      margin: 1rem 0 0.5rem;
+      font-size: 0.9rem;
+      line-height: 1.25;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h2:first-child {
+      margin-top: 0;
+    }
+
+    .distance-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    .distance-grid div {
+      min-width: 0;
+      padding: 0.55rem 0.5rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+    }
+
+    .distance-grid dt {
+      margin: 0 0 0.2rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .distance-grid dd {
+      margin: 0;
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .legend {
+      display: grid;
+      gap: 0.42rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .legend li,
+    .note-list li {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      color: var(--muted);
+      font-size: 0.87rem;
+      line-height: 1.35;
+    }
+
+    .swatch {
+      flex: 0 0 auto;
+      width: 1.9rem;
+      height: 0.65rem;
+      margin-top: 0.25rem;
+      border-radius: 999px;
+      background: var(--bike);
+    }
+
+    .swatch.ferry {
+      background: repeating-linear-gradient(90deg, var(--ferry) 0 0.45rem, transparent 0.45rem 0.7rem);
+      border: 1px solid var(--ferry);
+    }
+
+    .swatch.train {
+      background: repeating-linear-gradient(90deg, var(--train) 0 0.18rem, transparent 0.18rem 0.44rem);
+      border: 1px solid var(--train);
+    }
+
+    .swatch.approx {
+      background: repeating-linear-gradient(90deg, var(--approx) 0 0.45rem, transparent 0.45rem 0.7rem);
+      border: 1px solid var(--approx);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0.55rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .timeline li {
+      border: 1px solid var(--line);
+      border-left: 0.34rem solid var(--bike);
+      border-radius: 8px;
+      padding: 0.58rem 0.62rem;
+      background: var(--bike-soft);
+    }
+
+    .timeline li.ferry {
+      border-left-color: var(--ferry);
+      background: var(--ferry-soft);
+    }
+
+    .timeline li.train {
+      border-left-color: var(--train);
+      background: var(--train-soft);
+    }
+
+    .timeline li.stay,
+    .timeline li.approx {
+      border-left-color: var(--approx);
+      background: var(--approx-soft);
+    }
+
+    .time {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .title {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.93rem;
+      font-weight: 720;
+      line-height: 1.25;
+    }
+
+    .detail {
+      display: block;
+      margin-top: 0.28rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .note-list {
+      display: grid;
+      gap: 0.45rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .map-button-bar {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .map-button-bar button {
+      border: 1px solid #9fa9b3;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0.45rem 0.58rem;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .map-button-bar button:hover,
+    .map-button-bar button:focus-visible {
+      border-color: #52616f;
+      outline: none;
+    }
+
+    .leaflet-popup-content {
+      margin: 0.7rem 0.8rem;
+      color: var(--ink);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .popup-title {
+      margin: 0 0 0.35rem;
+      font-weight: 780;
+    }
+
+    .popup-meta {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .leaflet-control-attribution {
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        min-height: 100%;
+      }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .header-meta {
+        white-space: normal;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(22rem, 58vh) auto;
+      }
+
+      #map {
+        min-height: 22rem;
+        order: 1;
+      }
+
+      aside {
+        order: 2;
+        max-height: none;
+        border-right: 0;
+        border-top: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .distance-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      h1 {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ahvenanmaan pyöräreitti 24.-27.8.</h1>
+    <div class="header-meta">Tampere-Turku-Nauvo-Ahvenanmaa-Osnäs-Turku</div>
+  </header>
+
+  <main>
+    <aside>
+      <h2>Pyörämatkat</h2>
+      <dl class="distance-grid">
+        <div><dt>Pe</dt><dd>55 km</dd></div>
+        <div><dt>La</dt><dd>25 + 40 km</dd></div>
+        <div><dt>Su</dt><dd>90 km</dd></div>
+        <div><dt>Ma</dt><dd>100 km</dd></div>
+      </dl>
+
+      <h2>Merkinnät</h2>
+      <ul class="legend">
+        <li><span class="swatch"></span><span>Pyörä</span></li>
+        <li><span class="swatch ferry"></span><span>Lautta</span></li>
+        <li><span class="swatch train"></span><span>Juna</span></li>
+        <li><span class="swatch approx"></span><span>Paikkamerkki tai arvioitu pyöräosuus</span></li>
+      </ul>
+
+      <h2>Aikataulu</h2>
+      <ol class="timeline" id="timeline"></ol>
+
+      <h2>Oletukset</h2>
+      <ul class="note-list">
+        <li>YYY on merkitty Godbyn kohdalle vain suuntaa-antavana 40 km ankkurina Långnäsistä.</li>
+        <li>ZZZ on merkitty Puttes Campingin/Bomarsundin kohdalle, koska dokumentissa lukee "ZZZ = Putte?".</li>
+        <li>Katkoviivalla piirretyt pyöräosuudet täsmentyvät, kun YYY ja ZZZ varmistuvat.</li>
+      </ul>
+    </aside>
+
+    <div id="map" aria-label="Ahvenanmaan pyöräreittikartta"></div>
+  </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+    const points = {
+      tampere: { name: "Tampere", coords: [61.498237, 23.773858], role: "train" },
+      turku: { name: "Turku", coords: [60.456564, 22.260756], role: "train" },
+      kaarina: { name: "Kaarina", coords: [60.4072, 22.3694], show: false },
+      parainen: { name: "Parainen", coords: [60.3025, 22.3010], show: false },
+      lillmalo: { name: "Lillmälö", coords: [60.235570, 22.112274], role: "ferry" },
+      prostvik: { name: "Prostvik", coords: [60.222692, 22.098194], role: "ferry" },
+      nauvo: { name: "Nauvo", coords: [60.192468, 21.910510], role: "stop" },
+      parnas: { name: "Pärnäs", coords: [60.164430, 21.705074], role: "ferry" },
+      retais: { name: "Retais", coords: [60.165830, 21.690673], role: "ferry" },
+      galtby: { name: "Galtby", coords: [60.184840, 21.586959], role: "ferry" },
+      kokar: { name: "Kökar", coords: [59.9209, 20.9145], show: false },
+      sottunga: { name: "Sottunga", coords: [60.1298, 20.6653], show: false },
+      degersby: { name: "Degerby", coords: [60.0320, 20.3840], show: false },
+      langnas: { name: "Långnäs", coords: [60.116473, 20.297578], role: "ferry" },
+      lemland: { name: "Lemland", coords: [60.0710, 20.0850], show: false },
+      mariehamn: { name: "Mariehamn", coords: [60.102423, 19.941260], show: false },
+      godby: { name: "YYY / Godby-arvio", coords: [60.229873, 19.988046], role: "approx", tentative: true },
+      skarpnato: { name: "Skarpnåtö", coords: [60.327286, 19.755189], role: "ferry" },
+      snacko: { name: "Snäckö", coords: [60.345094, 19.803477], role: "ferry" },
+      sund: { name: "Sund", coords: [60.2465, 20.1165], show: false },
+      puttes: { name: "ZZZ / Puttes-arvio", coords: [60.214860, 20.232761], role: "approx", tentative: true },
+      hummelvik: { name: "Hummelvik", coords: [60.224221, 20.413668], role: "ferry" },
+      torsholma: { name: "Torsholma", coords: [60.350797, 21.073401], role: "ferry" },
+      ava: { name: "Åva", coords: [60.503280, 21.058243], role: "ferry" },
+      osnas: { name: "Osnäs / Vuosnainen", coords: [60.507461, 21.246903], role: "ferry" },
+      vartsala: { name: "Vartsala", coords: [60.540880, 21.319088], role: "ferry" },
+      kivimaa: { name: "Kivimaa / Gustavs", coords: [60.542577, 21.335997], role: "ferry" },
+      kustavi: { name: "Kustavi", coords: [60.5451, 21.3580], show: false },
+      taivassalo: { name: "Taivassalo", coords: [60.5600, 21.6160], show: false },
+      askainen: { name: "Askainen", coords: [60.5710, 21.8670], show: false },
+      raisio: { name: "Raisio", coords: [60.4859, 22.1689], show: false }
+    };
+
+    const timelineSegments = [
+      { day: "Pe 24.8.", time: "15:10-16:55", mode: "train", title: "Tampere-Turku juna", points: ["tampere", "turku"] },
+      { day: "Pe 24.8.", time: "16:55-20:00", mode: "bike", title: "Turku-Nauvo 55 km", detail: "Sisältää Parainen-Nauvo lautan.", points: ["turku", "kaarina", "parainen", "lillmalo", "prostvik", "nauvo"] },
+      { day: "Pe 24.8.", time: "20:00-00:00", mode: "stay", title: "Majoitus Nauvossa XXX?", points: ["nauvo"], exact: false },
+      { day: "La 25.8.", time: "07:00-09:00", mode: "bike", title: "Nauvo-Galtby 25 km", detail: "Sisältää Nauvo-Korppoo lautan.", points: ["nauvo", "parnas", "retais", "galtby"] },
+      { day: "La 25.8.", time: "09:30-15:00", mode: "ferry", title: "Galtby-Långnäs lautta", points: ["galtby", "kokar", "sottunga", "degersby", "langnas"] },
+      { day: "La 25.8.", time: "15:00-00:00", mode: "bike", title: "Långnäs-YYY noin 40 km", detail: "YYY on dokumentissa vielä avoin.", points: ["langnas", "lemland", "mariehamn", "godby"], exact: false },
+      { day: "Su 26.8.", time: "07:00-13:00", mode: "bike", title: "YYY-Skarpnåtö", points: ["godby", "skarpnato"], exact: false },
+      { day: "Su 26.8.", time: "13:00-13:30", mode: "ferry", title: "Skarpnåtö-Snäckö lautta", points: ["skarpnato", "snacko"] },
+      { day: "Su 26.8.", time: "13:30-00:00", mode: "bike", title: "Snäckö-ZZZ", detail: "ZZZ = Putte? dokumentin mukaan.", points: ["snacko", "godby", "sund", "puttes"], exact: false },
+      { day: "Ma 27.8.", time: "07:00-09:00", mode: "bike", title: "ZZZ-Hummelvik", points: ["puttes", "hummelvik"], exact: false },
+      { day: "Ma 27.8.", time: "09:30-12:00", mode: "ferry", title: "Hummelvik-Torsholma lautta", points: ["hummelvik", "torsholma"] },
+      { day: "Ma 27.8.", time: "12:00-15:05", mode: "bike", title: "Torsholma-Åva 23 km", points: ["torsholma", "ava"] },
+      { day: "Ma 27.8.", time: "15:05-15:50", mode: "ferry", title: "Åva-Osnäs lautta", points: ["ava", "osnas"] },
+      { day: "Ma 27.8.", time: "15:50-20:05", mode: "bike", title: "Osnäs-Turku 80 km", detail: "Sisältää Vartsala-Gustavs lautan, dokumentissa 16:30?", points: ["osnas", "vartsala", "kivimaa", "kustavi", "taivassalo", "askainen", "raisio", "turku"] },
+      { day: "Ma 27.8.", time: "20:05-21:46", mode: "train", title: "Turku-Tampere juna", points: ["turku", "tampere"] },
+      { day: "Ma/Ti", time: "06:54", mode: "train", title: "Varajuna Turku-Tampere", detail: "Jos maanantain junaan ei ehdi.", points: ["turku", "tampere"], optional: true }
+    ];
+
+    const ferryOverlays = [
+      { day: "Pe 24.8.", time: "16:55-20:00", mode: "ferry", title: "Parainen-Nauvo lautta", points: ["lillmalo", "prostvik"], overlay: true },
+      { day: "La 25.8.", time: "07:00-09:00", mode: "ferry", title: "Nauvo-Korppoo lautta", points: ["parnas", "retais"], overlay: true },
+      { day: "Ma 27.8.", time: "16:30?", mode: "ferry", title: "Vartsala-Gustavs lautta", points: ["vartsala", "kivimaa"], overlay: true }
+    ];
+
+    const map = L.map("map", { zoomControl: true });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
+    const routeLayer = L.layerGroup().addTo(map);
+    const markerLayer = L.layerGroup().addTo(map);
+
+    function latLngsFor(pointIds) {
+      return pointIds.map((pointId) => points[pointId].coords);
+    }
+
+    function styleFor(segment) {
+      if (segment.mode === "ferry") {
+        return { color: "#1769aa", weight: segment.overlay ? 5 : 4, opacity: 0.88, dashArray: "10 8", lineCap: "round" };
+      }
+
+      if (segment.mode === "train") {
+        return { color: "#4b5563", weight: segment.optional ? 2 : 3, opacity: segment.optional ? 0.35 : 0.62, dashArray: "3 8", lineCap: "round" };
+      }
+
+      if (segment.exact === false || segment.mode === "stay") {
+        return { color: "#b46b18", weight: 4, opacity: 0.82, dashArray: "8 9", lineCap: "round" };
+      }
+
+      return { color: "#167447", weight: 5, opacity: 0.86, lineCap: "round" };
+    }
+
+    function popupFor(segment) {
+      const detail = segment.detail ? `<p class="popup-meta">${segment.detail}</p>` : "";
+      const qualifier = segment.exact === false ? `<p class="popup-meta">Sijainti tai reitti on suuntaa-antava.</p>` : "";
+      return `<p class="popup-title">${segment.title}</p><p class="popup-meta">${segment.day} ${segment.time}</p>${detail}${qualifier}`;
+    }
+
+    function drawSegment(segment) {
+      if (segment.mode === "stay") {
+        return;
+      }
+
+      const latLngs = latLngsFor(segment.points);
+      const line = L.polyline(latLngs, styleFor(segment))
+        .bindPopup(popupFor(segment))
+        .bindTooltip(`${segment.day} ${segment.time}: ${segment.title}`, { sticky: true });
+      routeLayer.addLayer(line);
+    }
+
+    function markerStyle(point) {
+      if (point.role === "ferry") {
+        return { color: "#1769aa", fillColor: "#e3f0fb", radius: 5 };
+      }
+
+      if (point.role === "train") {
+        return { color: "#4b5563", fillColor: "#edf0f3", radius: 5 };
+      }
+
+      if (point.tentative || point.role === "approx") {
+        return { color: "#b46b18", fillColor: "#fff1dc", radius: 7, dashArray: "4 4" };
+      }
+
+      return { color: "#167447", fillColor: "#e3f3ea", radius: 5 };
+    }
+
+    function drawMarkers() {
+      Object.values(points).forEach((point) => {
+        if (point.show === false) {
+          return;
+        }
+
+        const style = markerStyle(point);
+        L.circleMarker(point.coords, {
+          radius: style.radius,
+          color: style.color,
+          weight: 2,
+          dashArray: style.dashArray,
+          fillColor: style.fillColor,
+          fillOpacity: 0.95
+        })
+          .bindPopup(`<p class="popup-title">${point.name}</p>`)
+          .addTo(markerLayer);
+      });
+    }
+
+    function populateTimeline() {
+      const timeline = document.getElementById("timeline");
+
+      timelineSegments.forEach((segment) => {
+        const item = document.createElement("li");
+        const isApprox = segment.exact === false || segment.mode === "stay";
+        item.className = isApprox ? "approx" : segment.mode;
+
+        const time = document.createElement("span");
+        time.className = "time";
+        time.textContent = `${segment.day} ${segment.time}`;
+
+        const title = document.createElement("span");
+        title.className = "title";
+        title.textContent = segment.title;
+
+        item.append(time, title);
+
+        if (segment.detail) {
+          const detail = document.createElement("span");
+          detail.className = "detail";
+          detail.textContent = segment.detail;
+          item.append(detail);
+        }
+
+        timeline.append(item);
+      });
+    }
+
+    [...timelineSegments, ...ferryOverlays].forEach(drawSegment);
+    drawMarkers();
+    populateTimeline();
+
+    const archipelagoBounds = L.latLngBounds([
+      [59.86, 19.38],
+      [60.60, 22.35]
+    ]);
+    const allRouteBounds = L.latLngBounds(
+      timelineSegments.flatMap((segment) => latLngsFor(segment.points))
+    );
+
+    map.fitBounds(archipelagoBounds, { padding: [20, 20] });
+
+    const ViewControl = L.Control.extend({
+      options: { position: "topright" },
+      onAdd() {
+        const container = L.DomUtil.create("div", "map-button-bar leaflet-bar");
+        const alandButton = L.DomUtil.create("button", "", container);
+        const allButton = L.DomUtil.create("button", "", container);
+
+        alandButton.type = "button";
+        allButton.type = "button";
+        alandButton.textContent = "Saaristo";
+        allButton.textContent = "Koko matka";
+
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.on(alandButton, "click", () => map.fitBounds(archipelagoBounds, { padding: [20, 20] }));
+        L.DomEvent.on(allButton, "click", () => map.fitBounds(allRouteBounds, { padding: [24, 24] }));
+
+        return container;
+      }
+    });
+
+    map.addControl(new ViewControl());
+  </script>
+</body>
+</html>
