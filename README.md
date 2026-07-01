@@ -1,4 +1,4 @@
-# Ahvenanmaa 24.-27.8.
+# Ahvenanmaa 24.-27.7.
 
 [Kartta](ahvenanmaa_map.html)
 
@@ -10,7 +10,7 @@
 | ma | 100 km |
 
 
-## Perjantai 24.8.
+## Perjantai 24.7.
 
 | Aika | Matka | Muuta |
 | --- | --- | --- |
@@ -18,7 +18,7 @@
 | 16:55-20:00 | Turku-Nauvo 55 km | [Parainen-Nauvo lautta](https://www.finferries.fi/en/ferry-traffic/ferries-and-schedules/pargas-nagu.html#timetables) |
 | 20:00-00:00 | XXX | Majoitus Nauvossa XXX? |
 
-## Lauantai 25.8.
+## Lauantai 25.7.
 
 | Aika | Matka | Muuta |
 | --- | --- | --- |
@@ -26,7 +26,7 @@
 | 09:30-15:00 | [Galtby-Långnäs lautta](https://www.aland.travel/southern-line) |  |
 | 15:00-00:00 | Långnäs-YYY | Majoitus Ahvenanmaalla YYY? |
 
-## Sunnuntai 26.8.
+## Sunnuntai 26.7.
 
 | Aika | Matka | Muuta |
 | --- | --- | --- |
@@ -34,7 +34,7 @@
 | 13:00-13:30 | [Skarpnåtö-Snäckö lautta](https://www.silvana.ax) |  |
 | 13:30-00:00 | Snäckö-ZZZ | ZZZ = Putte? |
 
-## Maanantai 27.8.
+## Maanantai 27.7.
 
 | Aika | Matka | Info |
 | --- | --- | --- |
