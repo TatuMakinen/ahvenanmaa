@@ -22,4 +22,4 @@
 | Aika | Matka | Muuta |
 | --- | --- | --- |
 | 08:00-20:30 | YYY-Turku 25 km | |
-| 20:30:22:25 | [Turku-Tampere bussi](https://www.onnibus.com/matkan-valinta?DepartureCityCode=TKUL&ArrivalCityCode=TAML&DepartureDate=2026-07-26&ReturnDate=&PromoCode=&Passengers%5B0%5D%5BConcessionCode%5D=&Passengers%5B0%5D%5BPassengerCount%5D=1) |  |
+| 20:30-22:25 | [Turku-Tampere bussi](https://www.onnibus.com/matkan-valinta?DepartureCityCode=TKUL&ArrivalCityCode=TAML&DepartureDate=2026-07-26&ReturnDate=&PromoCode=&Passengers%5B0%5D%5BConcessionCode%5D=&Passengers%5B0%5D%5BPassengerCount%5D=1) |  |
