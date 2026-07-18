@@ -1,5 +1,7 @@
 ## Perjantai 24.7.
 
+[Kartta](ahvenanmaa_map.html)
+
 | Aika | Matka | Muuta |
 | --- | --- | --- |
 | 15:10-16:55 | [Tampere-Turku juna](https://www.vr.fi/kertalippu-menomatkan-hakutulokset?from=TPE&to=TKU&outboundDate=2026-07-24&passengers[0][type]=ADULT&passengers[0][bicycles]=1) |  |
