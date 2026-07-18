@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ahvenanmaan pyöräreitti 24.-27.7.</title>
+  <title>Saariston rengasreitti 24.-26.7.</title>
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -23,6 +23,8 @@
       --ferry-soft: #e3f0fb;
       --train: #4b5563;
       --train-soft: #edf0f3;
+      --bus: #6f4e7c;
+      --bus-soft: #f1e8f5;
       --approx: #b46b18;
       --approx-soft: #fff1dc;
     }
@@ -167,6 +169,11 @@
       border: 1px solid var(--train);
     }
 
+    .swatch.bus {
+      background: repeating-linear-gradient(90deg, var(--bus) 0 0.35rem, transparent 0.35rem 0.62rem);
+      border: 1px solid var(--bus);
+    }
+
     .swatch.approx {
       background: repeating-linear-gradient(90deg, var(--approx) 0 0.45rem, transparent 0.45rem 0.7rem);
       border: 1px solid var(--approx);
@@ -196,6 +203,11 @@
     .timeline li.train {
       border-left-color: var(--train);
       background: var(--train-soft);
+    }
+
+    .timeline li.bus {
+      border-left-color: var(--bus);
+      background: var(--bus-soft);
     }
 
     .timeline li.stay,
@@ -326,8 +338,8 @@
 </head>
 <body>
   <header>
-    <h1>Ahvenanmaan pyöräreitti 24.-27.7.</h1>
-    <div class="header-meta">Tampere-Turku-Nauvo-Ahvenanmaa-Osnäs-Turku</div>
+    <h1>Saariston rengasreitti 24.-26.7.</h1>
+    <div class="header-meta">Tampere-Turku-Nauvo-Korpo-Houtskär-Iniö-Kustavi-Turku</div>
   </header>
 
   <main>
@@ -335,9 +347,8 @@
       <h2>Pyörämatkat</h2>
       <dl class="distance-grid">
         <div><dt>Pe</dt><dd>55 km</dd></div>
-        <div><dt>La</dt><dd>25 + 40 km</dd></div>
-        <div><dt>Su</dt><dd>90 km</dd></div>
-        <div><dt>Ma</dt><dd>100 km</dd></div>
+        <div><dt>La</dt><dd>25 + 24 km</dd></div>
+        <div><dt>Su</dt><dd>72 km</dd></div>
       </dl>
 
       <h2>Merkinnät</h2>
@@ -345,6 +356,7 @@
         <li><span class="swatch"></span><span>Pyörä</span></li>
         <li><span class="swatch ferry"></span><span>Lautta</span></li>
         <li><span class="swatch train"></span><span>Juna</span></li>
+        <li><span class="swatch bus"></span><span>Bussi</span></li>
         <li><span class="swatch approx"></span><span>Paikkamerkki tai arvioitu pyöräosuus</span></li>
       </ul>
 
@@ -353,13 +365,13 @@
 
       <h2>Oletukset</h2>
       <ul class="note-list">
-        <li>YYY on merkitty Mariehamnin kohdalle suuntaa-antavana ankkurina Långnäsistä.</li>
-        <li>ZZZ on merkitty Puttes Campingin/Bomarsundin kohdalle, koska dokumentissa lukee "ZZZ = Putte?".</li>
-        <li>Ålandin katkoviivat seuraavat karkeasti reittiä Mariehamn-Hammarland-Skarpnåtö ja Snäckö-Geta.</li>
+        <li>Jackois on merkitty Jumo/Norrby-alueelle suuntaa-antavasti, koska paikka ei löytynyt karttahausta nimellä.</li>
+        <li>Houtskärin pienet lautat on esitetty osana Kittuis-Mossala-pyöräosuutta.</li>
+        <li>Katkoviiva tarkoittaa siirtymää, jonka tarkka maantie- tai majapaikkapiste täsmentyy.</li>
       </ul>
     </aside>
 
-    <div id="map" aria-label="Ahvenanmaan pyöräreittikartta"></div>
+    <div id="map" aria-label="Saariston rengasreittikartta"></div>
   </main>
 
   <script
@@ -369,65 +381,56 @@
   ></script>
   <script>
     const points = {
-      tampere: { name: "Tampere", coords: [61.498237, 23.773858], role: "train" },
-      turku: { name: "Turku", coords: [60.456564, 22.260756], role: "train" },
+      tampere: { name: "Tampere rautatieasema", coords: [61.498237, 23.773858], role: "train" },
+      tampereBus: { name: "Tampere linja-autoasema", coords: [61.493486, 23.769296], role: "bus" },
+      turku: { name: "Turku rautatieasema", coords: [60.456564, 22.260756], role: "train" },
+      turkuBus: { name: "Turku linja-autoasema", coords: [60.456918, 22.266644], role: "bus" },
       kaarina: { name: "Kaarina", coords: [60.4072, 22.3694], show: false },
       parainen: { name: "Parainen", coords: [60.3025, 22.3010], show: false },
       lillmalo: { name: "Lillmälö", coords: [60.235570, 22.112274], role: "ferry" },
       prostvik: { name: "Prostvik", coords: [60.222692, 22.098194], role: "ferry" },
       nauvo: { name: "Nauvo", coords: [60.192468, 21.910510], role: "stop" },
+      norrgard: { name: "Norrgård", coords: [60.171075, 21.919693], role: "stop" },
       parnas: { name: "Pärnäs", coords: [60.164430, 21.705074], role: "ferry" },
       retais: { name: "Retais", coords: [60.165830, 21.690673], role: "ferry" },
       galtby: { name: "Galtby", coords: [60.184840, 21.586959], role: "ferry" },
-      kokar: { name: "Kökar", coords: [59.9209, 20.9145], show: false },
-      sottunga: { name: "Sottunga", coords: [60.1298, 20.6653], show: false },
-      degersby: { name: "Degerby", coords: [60.0320, 20.3840], show: false },
-      langnas: { name: "Långnäs", coords: [60.116473, 20.297578], role: "ferry" },
-      lemland: { name: "Lemland", coords: [60.0710, 20.0850], show: false },
-      mariehamn: { name: "YYY / Mariehamn-arvio", coords: [60.102423, 19.941260], role: "approx", tentative: true },
-      jomala: { name: "Jomala", coords: [60.152295, 19.948914], show: false },
-      hammarland: { name: "Hammarland", coords: [60.216049, 19.738716], role: "stop" },
-      godby: { name: "Godby", coords: [60.229873, 19.988046], show: false },
-      skarpnato: { name: "Skarpnåtö", coords: [60.327286, 19.755189], role: "ferry" },
-      snacko: { name: "Snäckö", coords: [60.345094, 19.803477], role: "ferry" },
-      geta: { name: "Geta", coords: [60.374016, 19.849813], role: "stop" },
-      sund: { name: "Sund", coords: [60.2465, 20.1165], show: false },
-      puttes: { name: "ZZZ / Puttes-arvio", coords: [60.214860, 20.232761], role: "approx", tentative: true },
-      hummelvik: { name: "Hummelvik", coords: [60.224221, 20.413668], role: "ferry" },
-      torsholma: { name: "Torsholma", coords: [60.350797, 21.073401], role: "ferry" },
-      ava: { name: "Åva", coords: [60.503280, 21.058243], role: "ferry" },
-      osnas: { name: "Osnäs / Vuosnainen", coords: [60.507461, 21.246903], role: "ferry" },
-      vartsala: { name: "Vartsala", coords: [60.540880, 21.319088], role: "ferry" },
-      kivimaa: { name: "Kivimaa / Gustavs", coords: [60.542577, 21.335997], role: "ferry" },
-      kustavi: { name: "Kustavi", coords: [60.5451, 21.3580], show: false },
-      taivassalo: { name: "Taivassalo", coords: [60.5600, 21.6160], show: false },
-      askainen: { name: "Askainen", coords: [60.5710, 21.8670], show: false },
-      raisio: { name: "Raisio", coords: [60.4859, 22.1689], show: false }
+      kittuis: { name: "Kittuis", coords: [60.186959, 21.438165], role: "ferry" },
+      nasby: { name: "Näsby", coords: [60.221905, 21.360582], show: false },
+      saverkeit: { name: "Saverkeit", coords: [60.216795, 21.403176], show: false },
+      bjorko: { name: "Björkö", coords: [60.256204, 21.404285], show: false },
+      kivimo: { name: "Kivimo", coords: [60.243330, 21.333930], show: false },
+      mossala: { name: "Mossala", coords: [60.268791, 21.405994], role: "stop" },
+      mossalaFerry: { name: "Mossala lautta", coords: [60.288375, 21.439361], role: "ferry" },
+      dalen: { name: "Dalen", coords: [60.381703, 21.371868], role: "ferry" },
+      norrby: { name: "Norrby", coords: [60.396940, 21.388418], show: false },
+      jackois: { name: "Jackois-arvio", coords: [60.422852, 21.379085], role: "approx", tentative: true },
+      kannvik: { name: "Kannvik", coords: [60.439431, 21.396110], role: "ferry" },
+      heponiemi: { name: "Heponiemi", coords: [60.485346, 21.434640], role: "ferry" },
+      kustavi: { name: "Kustavi", coords: [60.545849, 21.355805], role: "stop" },
+      taivassalo: { name: "Taivassalo", coords: [60.561935, 21.613233], show: false },
+      askainen: { name: "Askainen", coords: [60.572444, 21.867408], show: false },
+      raisio: { name: "Raisio", coords: [60.485513, 22.169266], show: false }
     };
 
     const timelineSegments = [
       { day: "Pe 24.7.", time: "15:10-16:55", mode: "train", title: "Tampere-Turku juna", points: ["tampere", "turku"] },
-      { day: "Pe 24.7.", time: "16:55-20:00", mode: "bike", title: "Turku-Nauvo 55 km", detail: "Sisältää Parainen-Nauvo lautan.", points: ["turku", "kaarina", "parainen", "lillmalo", "prostvik", "nauvo"] },
-      { day: "Pe 24.7.", time: "20:00-00:00", mode: "stay", title: "Majoitus Nauvossa XXX?", points: ["nauvo"], exact: false },
-      { day: "La 25.7.", time: "07:00-09:00", mode: "bike", title: "Nauvo-Galtby 25 km", detail: "Sisältää Nauvo-Korppoo lautan.", points: ["nauvo", "parnas", "retais", "galtby"] },
-      { day: "La 25.7.", time: "09:30-15:00", mode: "ferry", title: "Galtby-Långnäs lautta", points: ["galtby", "kokar", "sottunga", "degersby", "langnas"] },
-      { day: "La 25.7.", time: "15:00-00:00", mode: "bike", title: "Långnäs-YYY noin 40 km", detail: "YYY on dokumentissa vielä avoin; kartassa ankkurina Mariehamn.", points: ["langnas", "lemland", "mariehamn"], exact: false },
-      { day: "Su 26.7.", time: "07:00-13:00", mode: "bike", title: "YYY-Skarpnåtö", detail: "Piirretty reitinä Mariehamn-Hammarland-Skarpnåtö.", points: ["mariehamn", "jomala", "hammarland", "skarpnato"], exact: false },
-      { day: "Su 26.7.", time: "13:00-13:30", mode: "ferry", title: "Skarpnåtö-Snäckö lautta", points: ["skarpnato", "snacko"] },
-      { day: "Su 26.7.", time: "13:30-00:00", mode: "bike", title: "Snäckö-ZZZ", detail: "Piirretty Getan kautta; ZZZ = Putte? dokumentin mukaan.", points: ["snacko", "geta", "godby", "sund", "puttes"], exact: false },
-      { day: "Ma 27.7.", time: "07:00-09:00", mode: "bike", title: "ZZZ-Hummelvik", points: ["puttes", "hummelvik"], exact: false },
-      { day: "Ma 27.7.", time: "09:30-12:00", mode: "ferry", title: "Hummelvik-Torsholma lautta", points: ["hummelvik", "torsholma"] },
-      { day: "Ma 27.7.", time: "12:00-15:05", mode: "bike", title: "Torsholma-Åva 23 km", points: ["torsholma", "ava"] },
-      { day: "Ma 27.7.", time: "15:05-15:50", mode: "ferry", title: "Åva-Osnäs lautta", points: ["ava", "osnas"] },
-      { day: "Ma 27.7.", time: "15:50-20:05", mode: "bike", title: "Osnäs-Turku 80 km", detail: "Sisältää Vartsala-Gustavs lautan, dokumentissa 16:30?", points: ["osnas", "vartsala", "kivimaa", "kustavi", "taivassalo", "askainen", "raisio", "turku"] },
-      { day: "Ma 27.7.", time: "20:05-21:46", mode: "train", title: "Turku-Tampere juna", points: ["turku", "tampere"] },
-      { day: "Ma/Ti", time: "06:54", mode: "train", title: "Varajuna Turku-Tampere", detail: "Jos maanantain junaan ei ehdi.", points: ["turku", "tampere"], optional: true }
+      { day: "Pe 24.7.", time: "16:55-20:00", mode: "bike", title: "Turku-Nauvo 55 km", detail: "Sisältää Parainen-Nauvo lautan ja päättyy Norrgårdin majoitukseen.", points: ["turku", "kaarina", "parainen", "lillmalo", "prostvik", "nauvo", "norrgard"] },
+      { day: "Pe 24.7.", time: "20:00-00:00", mode: "stay", title: "Majoitus, ruoka, sauna", detail: "Norrgård.", points: ["norrgard"], exact: false },
+      { day: "La 25.7.", time: "aika avoin", mode: "bike", title: "Nauvo-Galtby 25 km", detail: "Sisältää Nauvo-Korppoo lautan.", points: ["norrgard", "nauvo", "parnas", "retais", "galtby"] },
+      { day: "La 25.7.", time: "10:00-10:45 / 11:25-12:00", mode: "ferry", title: "Korpo-Houtskär lautta", points: ["galtby", "kittuis"] },
+      { day: "La 25.7.", time: "aika avoin", mode: "bike", title: "Kittuis-Mossala 24 km", detail: "Pari pientä lauttaa Houtskärissä.", points: ["kittuis", "nasby", "saverkeit", "bjorko", "kivimo", "mossala", "mossalaFerry"] },
+      { day: "La 25.7.", time: "12:15-13:15 / 14:15-15:15 / 16:15-17:45", mode: "ferry", title: "Mossala-Dalen lautta", points: ["mossalaFerry", "dalen"] },
+      { day: "La 25.7.", time: "aika avoin", mode: "bike", title: "Dalen-Jackois", detail: "Majoitus, ruoka ja sauna Jackoisissa.", points: ["dalen", "norrby", "jackois"], exact: false },
+      { day: "Su 26.7.", time: "aika avoin", mode: "bike", title: "Jackois-Kannvik", detail: "Siirtymä Iniö-Gustavs lautan lähtöpaikalle.", points: ["jackois", "kannvik"], exact: false },
+      { day: "Su 26.7.", time: "11:00-11:45 / 13:30-14:00", mode: "ferry", title: "Iniö-Gustavs lautta", points: ["kannvik", "heponiemi"] },
+      { day: "Su 26.7.", time: "aika avoin", mode: "bike", title: "Kustavi-Turku 72 km", points: ["heponiemi", "kustavi", "taivassalo", "askainen", "raisio", "turkuBus"] },
+      { day: "Su 26.7.", time: "20:30-22:25", mode: "bus", title: "Turku-Tampere bussi", points: ["turkuBus", "tampereBus"] }
     ];
 
     const ferryOverlays = [
       { day: "Pe 24.7.", time: "16:55-20:00", mode: "ferry", title: "Parainen-Nauvo lautta", points: ["lillmalo", "prostvik"], overlay: true },
       { day: "La 25.7.", time: "07:00-09:00", mode: "ferry", title: "Nauvo-Korppoo lautta", points: ["parnas", "retais"], overlay: true },
-      { day: "Ma 27.7.", time: "16:30?", mode: "ferry", title: "Vartsala-Gustavs lautta", points: ["vartsala", "kivimaa"], overlay: true }
+      { day: "La 25.7.", time: "aika avoin", mode: "ferry", title: "Houtskärin pienet lautat", points: ["saverkeit", "bjorko", "kivimo"], overlay: true }
     ];
 
     const map = L.map("map", { zoomControl: true });
@@ -451,6 +454,10 @@
 
       if (segment.mode === "train") {
         return { color: "#4b5563", weight: segment.optional ? 2 : 3, opacity: segment.optional ? 0.35 : 0.62, dashArray: "3 8", lineCap: "round" };
+      }
+
+      if (segment.mode === "bus") {
+        return { color: "#6f4e7c", weight: 3, opacity: 0.66, dashArray: "7 8", lineCap: "round" };
       }
 
       if (segment.exact === false || segment.mode === "stay") {
@@ -485,6 +492,10 @@
 
       if (point.role === "train") {
         return { color: "#4b5563", fillColor: "#edf0f3", radius: 5 };
+      }
+
+      if (point.role === "bus") {
+        return { color: "#6f4e7c", fillColor: "#f1e8f5", radius: 5 };
       }
 
       if (point.tentative || point.role === "approx") {
@@ -548,8 +559,8 @@
     populateTimeline();
 
     const archipelagoBounds = L.latLngBounds([
-      [59.86, 19.38],
-      [60.60, 22.35]
+      [60.12, 21.30],
+      [60.58, 22.35]
     ]);
     const allRouteBounds = L.latLngBounds(
       timelineSegments.flatMap((segment) => latLngsFor(segment.points))
